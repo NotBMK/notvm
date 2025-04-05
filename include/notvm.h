@@ -18,9 +18,19 @@ namespace nvm
 
         void reset();
 
+        // read 1 byte
         BYTE operator[] (WORD address) const;
 
+        // write 1 byte
         BYTE& operator[] (WORD address);
+
+        // write 2 bytes
+        void writeWord(WORD value, WORD address, WORD& cycles)
+        {
+            data[address] = value & 0xFF;
+            data[address+1] = (value >> 8);
+            cycles -= 2;
+        }
     };
 
     // 6502 CPU registers and flags
@@ -32,11 +42,14 @@ namespace nvm
 
         BYTE readByte(WORD& cycles, BYTE address, Memory& memory) const;
 
-        // Fetch the next byte from memory and increment the program counter
-        // Decrement cycles for each fetch
         BYTE fetchByte(WORD& cycles, Memory& memory);
+        BYTE fetchWord(WORD& cycles, Memory& memory);
 
         void execute(WORD cycles, Memory& memory);
+
+    private:
+
+        void StatusLDA();
 
     protected:
         

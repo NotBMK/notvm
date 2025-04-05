@@ -39,17 +39,32 @@ void CPU::reset_with(Memory &mem)
 
 BYTE CPU::readByte(WORD& cycles, BYTE address, Memory& memory) const
 {
-    BYTE value = memory.data[address];
+    BYTE data = memory[address];
     --cycles;
-    return value;
+    return data;
 }
 
 
 BYTE CPU::fetchByte(WORD& cycles, Memory& memory)
 {
-    BYTE value = memory.data[PC];
+    BYTE data = memory[PC];
     ++PC; --cycles;
-    return value;
+    return data;
+}
+
+BYTE CPU::fetchWord(WORD& cycles, Memory& memory)
+{
+    WORD data = memory[PC];
+    ++PC;
+    data |= (memory[PC] << 8);
+    cycles -= 2;
+    return data;
+}
+
+void CPU::StatusLDA()
+{
+    Z = (A == 0);
+    N = (A & 0x80) > 0;
 }
 
 void CPU::execute(WORD cycles, Memory& memory)
@@ -61,19 +76,33 @@ void CPU::execute(WORD cycles, Memory& memory)
         // For example:
         switch (inst)
         {
-        case LDA_IM:
+        case INST_LDA_IM:
         {
             A = fetchByte(cycles, memory);
-            Z = (A == 0);
-            N = (A & 0x80) > 0;
+            StatusLDA();
         } break;
 
-        case LDA_ZP:
+        case INST_LDA_ZP:
         {
             BYTE address = fetchByte(cycles, memory);
             A = readByte(cycles, address, memory);
-            Z = (A == 0);
-            N = (A & 0x80) > 0;
+            StatusLDA();
+        } break;
+
+        case INST_LDA_ZPX:
+        {
+            BYTE address = fetchByte(cycles, memory);
+            address += X; --cycles;
+            A = readByte(cycles, address, memory);
+            StatusLDA();
+        } break;
+
+        case INST_JSR:
+        {
+            WORD subAddr = fetchWord(cycles, memory);
+            memory.writeWord(PC-1, SP, cycles);
+            ++SP;
+            PC = subAddr; --cycles;
         } break;
 
         default:
