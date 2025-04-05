@@ -30,6 +30,8 @@ namespace nvm
 
         void reset_with(Memory &mem);
 
+        BYTE readByte(WORD& cycles, BYTE address, Memory& memory) const;
+
         // Fetch the next byte from memory and increment the program counter
         // Decrement cycles for each fetch
         BYTE fetchByte(WORD& cycles, Memory& memory);

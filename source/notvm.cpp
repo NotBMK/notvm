@@ -1,5 +1,7 @@
 #include <notvm.h>
 
+#include <stdio.h>
+
 using namespace nvm;
 
 void Memory::reset()
@@ -35,30 +37,49 @@ void CPU::reset_with(Memory &mem)
     mem.reset();
 }
 
+BYTE CPU::readByte(WORD& cycles, BYTE address, Memory& memory) const
+{
+    BYTE value = memory.data[address];
+    --cycles;
+    return value;
+}
+
+
 BYTE CPU::fetchByte(WORD& cycles, Memory& memory)
 {
-    return --cycles, memory.data[PC++];
+    BYTE value = memory.data[PC];
+    ++PC; --cycles;
+    return value;
 }
 
 void CPU::execute(WORD cycles, Memory& memory)
 {
     while (cycles > 0)
     {
-        BYTE opcode = fetchByte(cycles, memory);
-        // Decode and execute the opcode here
+        BYTE inst = fetchByte(cycles, memory);
+        // Decode and execute the inst here
         // For example:
-        switch (opcode)
+        switch (inst)
         {
-            case 0x00: // BRK - Force Break
-                // Handle BRK instruction
-                break;
-            case 0x01: // ORA - Logical OR Accumulator with Memory
-                // Handle ORA instruction
-                break;
-            // Add more opcodes as needed
-            default:
-                // Handle unknown opcode
-                break;
+        case LDA_IM:
+        {
+            A = fetchByte(cycles, memory);
+            Z = (A == 0);
+            N = (A & 0x80) > 0;
+        } break;
+
+        case LDA_ZP:
+        {
+            BYTE address = fetchByte(cycles, memory);
+            A = readByte(cycles, address, memory);
+            Z = (A == 0);
+            N = (A & 0x80) > 0;
+        } break;
+
+        default:
+        {
+            printf("Instruction '%d' not handled.\n", inst);
+        } break;
         }
     }
 }
