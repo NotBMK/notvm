@@ -22,6 +22,13 @@ BYTE& Memory::operator[] (WORD address)
     return data[address];
 }
 
+void Memory::writeWord(WORD value, WORD address, WORD& cycles)
+{
+    data[address] = value & 0xFF;
+    data[address+1] = (value >> 8);
+    cycles += 2;
+}
+
 void CPU::reset()
 {
     PC = 0xFFFC;
@@ -40,7 +47,7 @@ void CPU::reset_with(Memory &mem)
 BYTE CPU::readByte(WORD& cycles, BYTE address, Memory& memory) const
 {
     BYTE data = memory[address];
-    --cycles;
+    ++cycles;
     return data;
 }
 
@@ -48,7 +55,7 @@ BYTE CPU::readByte(WORD& cycles, BYTE address, Memory& memory) const
 BYTE CPU::fetchByte(WORD& cycles, Memory& memory)
 {
     BYTE data = memory[PC];
-    ++PC; --cycles;
+    ++PC; ++cycles;
     return data;
 }
 
@@ -57,7 +64,7 @@ BYTE CPU::fetchWord(WORD& cycles, Memory& memory)
     WORD data = memory[PC];
     ++PC;
     data |= (memory[PC] << 8);
-    cycles -= 2;
+    cycles += 2;
     return data;
 }
 
@@ -65,50 +72,4 @@ void CPU::StatusLDA()
 {
     Z = (A == 0);
     N = (A & 0x80) > 0;
-}
-
-void CPU::execute(WORD cycles, Memory& memory)
-{
-    while (cycles > 0)
-    {
-        BYTE inst = fetchByte(cycles, memory);
-        // Decode and execute the inst here
-        // For example:
-        switch (inst)
-        {
-        case INST_LDA_IM:
-        {
-            A = fetchByte(cycles, memory);
-            StatusLDA();
-        } break;
-
-        case INST_LDA_ZP:
-        {
-            BYTE address = fetchByte(cycles, memory);
-            A = readByte(cycles, address, memory);
-            StatusLDA();
-        } break;
-
-        case INST_LDA_ZPX:
-        {
-            BYTE address = fetchByte(cycles, memory);
-            address += X; --cycles;
-            A = readByte(cycles, address, memory);
-            StatusLDA();
-        } break;
-
-        case INST_JSR:
-        {
-            WORD subAddr = fetchWord(cycles, memory);
-            memory.writeWord(PC-1, SP, cycles);
-            ++SP;
-            PC = subAddr; --cycles;
-        } break;
-
-        default:
-        {
-            printf("Instruction '%d' not handled.\n", inst);
-        } break;
-        }
-    }
 }

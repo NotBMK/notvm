@@ -25,12 +25,7 @@ namespace nvm
         BYTE& operator[] (WORD address);
 
         // write 2 bytes
-        void writeWord(WORD value, WORD address, WORD& cycles)
-        {
-            data[address] = value & 0xFF;
-            data[address+1] = (value >> 8);
-            cycles -= 2;
-        }
+        void writeWord(WORD value, WORD address, WORD& cycles);
     };
 
     // 6502 CPU registers and flags
@@ -45,7 +40,7 @@ namespace nvm
         BYTE fetchByte(WORD& cycles, Memory& memory);
         BYTE fetchWord(WORD& cycles, Memory& memory);
 
-        void execute(WORD cycles, Memory& memory);
+        WORD execute(WORD cycles, Memory& memory);
 
     private:
 
