@@ -17,11 +17,27 @@ namespace nvm
         BYTE data[MAX_MEMORY]; // 64KB of memory
 
         void reset();
+
+        BYTE operator[] (WORD address) const;
+
+        BYTE& operator[] (WORD address);
     };
 
     // 6502 CPU registers and flags
     struct CPU
     {
+        void reset();
+
+        void reset_with(Memory &mem);
+
+        // Fetch the next byte from memory and increment the program counter
+        // Decrement cycles for each fetch
+        BYTE fetchByte(WORD& cycles, Memory& memory);
+
+        void execute(WORD cycles, Memory& memory);
+
+    protected:
+        
         WORD PC; // Program Counter
         WORD SP; // Stack Pointer
 
@@ -38,15 +54,6 @@ namespace nvm
             BYTE N : 1; // Negative
             BYTE _ : 1; // unused
         };
-
-        void reset();
-
-        void reset_with(Memory &mem)
-        {
-            reset();
-            mem.reset();
-        }
-    
     };
 } // namespace nvm
 
