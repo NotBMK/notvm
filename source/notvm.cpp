@@ -2,28 +2,26 @@
 
 using namespace nvm;
 
-void VirtualMachine::execute()
+void Memory::reset()
 {
-    BYTE inst = nextInst();
-    switch (inst & CODE)
+    for (int i = 0; i < MAX_MEMORY; i++)
     {
-    case SET:
-    {
-
-    } break;
-    case PUSH:
-    {
-        memory[cpu[SP].X--] = nextInst();
-        memory[cpu[SP].X--] = nextInst();
-    } break;
-    case POP:
-    {
-
-    } break;
-    };
+        data[i] = 0;
+    }
 }
 
-BYTE VirtualMachine::nextInst()
+void CPU::reset()
 {
-    return memory[cpu[CS].X + (cpu[IP].X++)];
+    PC = 0xFFFC;
+    SP = 0x0100;
+    A = X = Y = 0;
+
+    C = Z = I = D = B = V = N = _ = 0; // Clear all flags  
 }
+
+void CPU::reset_with(Memory &mem)
+{
+    reset();
+    mem.reset();
+}
+

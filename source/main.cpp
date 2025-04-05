@@ -2,9 +2,8 @@
 
 int main(int argc, char const *argv[])
 {
-    nvm::VirtualMachine vm;
-
-    
+    nvm::Memory mem;
+    nvm::CPU cpu;
 
     return 0;
 }
