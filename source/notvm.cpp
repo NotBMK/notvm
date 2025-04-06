@@ -44,32 +44,39 @@ void CPU::reset_with(Memory &mem)
     mem.reset();
 }
 
-BYTE CPU::readByte(WORD& cycles, BYTE address, Memory& memory) const
+BYTE CPU::readByte(WORD& cycles, WORD address, Memory& memory) const
 {
     BYTE data = memory[address];
+    printf("Read byte: %02X from address: %04X\n", data, address);
     ++cycles;
     return data;
 }
 
+WORD CPU::readWord(WORD& cycles, WORD address, Memory& memory) const
+{
+    BYTE low = readByte(cycles, address, memory);
+    BYTE high = readByte(cycles, address + 1, memory);
+    WORD data = low | (high << 8);
+    printf("- Read word: %04X from address: %04X\n", data, address);
+    return data;
+}
 
 BYTE CPU::fetchByte(WORD& cycles, Memory& memory)
 {
-    BYTE data = memory[PC];
-    ++PC; ++cycles;
-    return data;
-}
-
-BYTE CPU::fetchWord(WORD& cycles, Memory& memory)
-{
-    WORD data = memory[PC];
+    BYTE data = readByte(cycles, PC, memory);
     ++PC;
-    data |= (memory[PC] << 8);
-    cycles += 2;
     return data;
 }
 
-void CPU::StatusLDA()
+WORD CPU::fetchWord(WORD& cycles, Memory& memory)
 {
-    Z = (A == 0);
-    N = (A & 0x80) > 0;
+    WORD data = readWord(cycles, PC, memory);
+    PC += 2;
+    return data;
+}
+
+void CPU::StatusLoadRegister(BYTE R)
+{
+    Z = (R == 0);
+    N = (R & 0x80) > 0;
 }

@@ -35,35 +35,44 @@ namespace nvm
 
         void reset_with(Memory &mem);
 
-        BYTE readByte(WORD& cycles, BYTE address, Memory& memory) const;
+        BYTE readByte(WORD& cycles, WORD address, Memory& memory) const;
+        WORD readWord(WORD& cycles, WORD address, Memory& memory) const;
 
         BYTE fetchByte(WORD& cycles, Memory& memory);
-        BYTE fetchWord(WORD& cycles, Memory& memory);
+        WORD fetchWord(WORD& cycles, Memory& memory);
 
         WORD execute(WORD cycles, Memory& memory);
 
+        void showRegisters() const noexcept;
+
     private:
 
-        void StatusLDA();
+        void StatusLoadRegister(BYTE reg);
 
     protected:
+    public:
         
         WORD PC; // Program Counter
         WORD SP; // Stack Pointer
 
         BYTE A, X, Y; // registers
 
-        struct
+        union
         {
-            BYTE C : 1; // Carry
-            BYTE Z : 1; // Zero
-            BYTE I : 1; // Interrupt Disable
-            BYTE D : 1; // Decimal Mode
-            BYTE B : 1; // Break Command
-            BYTE V : 1; // Overflow
-            BYTE N : 1; // Negative
-            BYTE _ : 1; // unused
+            BYTE Status; // Status register
+            struct
+            {
+                BYTE C : 1; // Carry
+                BYTE Z : 1; // Zero
+                BYTE I : 1; // Interrupt Disable
+                BYTE D : 1; // Decimal Mode
+                BYTE B : 1; // Break Command
+                BYTE V : 1; // Overflow
+                BYTE N : 1; // Negative
+                BYTE _ : 1; // unused
+            };
         };
+        
     };
 } // namespace nvm
 
