@@ -18,7 +18,6 @@ U08 Memory::byte(U08 page, U08 addr) const
     return data[page][addr];
 }
 
-
 U08& Memory::byte(U08 page, U08 addr)
 {
     return data[page][addr];

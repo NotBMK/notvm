@@ -4,9 +4,9 @@ using namespace nvm;
 
 void CPU::reset()
 {
-    PC = 0x0000;
-    SP = 0x00;
-    A = X = Y = 0x00;
+    PC.all = 0x0000;
+    SP.all = 0x00;
+    A.all = X.all = Y.all = 0x00;
     Status = 0x00;
 }
 
@@ -35,41 +35,41 @@ void CPU::tick(U16& cycles, U08 ticks)
     cycles += ticks;
 }
 
-void CPU::loadRegister(U08 CPU::* R, Byte value)
+void CPU::loadRegister(Byte CPU::* R, Byte value)
 {
-    this->*R = value.all;
-    Z = (value.all == 0);
-    N = value.b07;
+    this->*R = value;
+    Z = ((this->*R).all == 0);
+    N = ((this->*R).b07);
 }
 
 Byte CPU::nextByte(U16& cycles, Memory& memory)
 {
-    Byte data = readByteFromMemory(cycles, PC_H, PC_L, memory);
-    PC += 1;
+    Byte data = readByteFromMemory(cycles, PC, memory);
+    PC.all += 1;
     return data;
 }
 
 Word CPU::nextWord(U16& cycles, Memory& memory)
 {
-    Word data = readWordFromMemory(cycles, PC_H, PC_L, memory);
-    PC += 2;
+    Word data = readWordFromMemory(cycles, PC, memory);
+    PC.all += 2;
     return data;
 }
 
-Byte CPU::readByteFromMemory(U16& cycles, U08 page, U08 address, Memory& memory)
+Byte CPU::readByteFromMemory(U16& cycles, Word address, Memory& memory)
 {
     Byte data;
-    data.all = memory.byte(page, address);
+    data.all = memory.byte(address.high, address.low);
     tick(cycles, 1);
-    printf("readByteFromMemory: %02X %02X %02X\n", page, address, data.all);
+    printf("readByteFromMemory: %02X %02X %02X\n", address.high, address.low, data.all);
     return data;
 }
 
-Word CPU::readWordFromMemory(U16& cycles, U08 page, U08 address, Memory& memory)
+Word CPU::readWordFromMemory(U16& cycles, Word address, Memory& memory)
 {
     Word data;
-    data.all = memory.word(page, address);
+    data.all = memory.word(address.high, address.low);
     tick(cycles, 2);
-    printf("readWordFromMemory: %02X %02X %04X\n", page, address, data.all);
+    printf("readWordFromMemory: %02X %02X %04X\n", address.high, address.low, data.all);
     return data;
 }

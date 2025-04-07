@@ -40,7 +40,7 @@ namespace nvm
 
     protected:
 
-        void loadRegister(U08 CPU::* R, Byte value);
+        void loadRegister(Byte CPU::* R, Byte value);
 
         void tick(U16& cycles, U08 ticks);
 
@@ -64,23 +64,15 @@ namespace nvm
 
         Word nextWord(U16& cycles, Memory& memory);
 
-        Byte readByteFromMemory(U16& cycles, U08 page, U08 address, Memory& memory);
+        Byte readByteFromMemory(U16& cycles, Word address, Memory& memory);
 
-        Word readWordFromMemory(U16& cycles, U08 page, U08 address, Memory& memory);
+        Word readWordFromMemory(U16& cycles, Word address, Memory& memory);
 
     protected:
 
-        union
-        {
-            U16 PC; // program counter
-            struct
-            {
-                U08 PC_L; // lowbit of program counter
-                U08 PC_H; // highbit of program counter
-            };
-        };
-        U08 SP;
-        U08 A, X, Y;
+        Word PC;
+        Byte SP;
+        Byte A, X, Y;
         union
         {
             U08 Status; // status register
