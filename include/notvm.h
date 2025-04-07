@@ -52,6 +52,10 @@ namespace nvm
 
         void noOperation(U16& cycles) const;
 
+        void push(U16& cycles, Byte data, Memory& memory);
+
+        Byte pull(U16& cycles, Memory& memory);
+
     protected: // addressing mode
     
         Word addressingZeroPage(U16& cycles, Memory& memory);

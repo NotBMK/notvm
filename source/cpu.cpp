@@ -5,7 +5,7 @@ using namespace nvm;
 void CPU::reset()
 {
     PC.all = 0x0000;
-    SP.all = 0x00;
+    SP.all = 0xFF;
     A.all = X.all = Y.all = 0x00;
     Status = 0x00;
 }

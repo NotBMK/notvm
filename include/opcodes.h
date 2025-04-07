@@ -39,7 +39,7 @@ namespace nvm
         PHA = 0x48, // Push Accumulator
         PHP = 0x08, // Push Processor Status
         PLA = 0x68, // Pull Accumulator
-        PLP = 0x08, // Pull Processor Status
+        PLP = 0x28, // Pull Processor Status
         
     };
 } // namespace nvm

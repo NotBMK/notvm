@@ -37,12 +37,12 @@ U16 CPU::execute(U16 cyclesRequest, Memory& memory)
         case LSR_ZPG: logicalShiftRight(cycles, addressingZeroPage(cycles, memory), memory); break;
         case LSR_ZPX: logicalShiftRight(cycles, addressingZeroPageX(cycles, memory), memory); break; 
         case LSR_ABS: logicalShiftRight(cycles, addressingAbsolute(cycles, memory), memory); break; 
-        case LSR_ABX: logicalShiftRight(cycles, addressingAbsoluteX(cycles, memory), memory); break;
+        case LSR_ABX: logicalShiftRight(cycles, addressingAbsoluteX(cycles, memory), memory); tick(cycles, 1); break;
 
-        case PHA: break;
-        case PHP: break;
-        case PLA: break;
-        case PLP: break;
+        case PHA: push(cycles, A, memory); break;
+        case PHP: push(cycles, Status, memory); break;
+        case PLA: loadRegister(&CPU::A, pull(cycles, memory)); break;
+        case PLP: Status = pull(cycles, memory).all; break;
 
         default:
             printf("unhandled instruction : '%02x'\n", inst);
