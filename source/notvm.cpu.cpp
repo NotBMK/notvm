@@ -16,6 +16,31 @@ void CPU::resetWith(Memory& memory)
     memory.reset();
 }
 
+void CPU::view() const noexcept
+{
+    printf(
+        "A: %02X, X: %02X, Y: %02X\n"
+        "PC: %04X, SP: %04X\n"
+        "Status:\n"
+        "\t%1d %1d %1d %1d %1d %1d %1d\n"
+        "\tN V B D I Z C\n\n",
+        A, X, Y,
+        PC, SP,
+        N, V, B, D, I, Z, C
+        );
+}
+
+void CPU::tick(WORD& cycles, BYTE ticks)
+{
+    cycles += ticks;
+}
+
+void CPU::statusLoad(BYTE CPU::* R)
+{
+    Z = (this->*R == 0);
+    N = (this->*R & 0x80) > 0;
+}
+
 BYTE CPU::nextByte(WORD& cycles, Memory& memory)
 {
     BYTE inst = readByteFromMemory(cycles, PC_H, PC_L, memory);
