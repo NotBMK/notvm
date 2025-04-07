@@ -10,4 +10,4 @@ file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.cpp")
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
-add_subdirectory(testVM)
+add_subdirectory(Example)
