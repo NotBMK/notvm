@@ -39,6 +39,11 @@ U16 CPU::execute(U16 cyclesRequest, Memory& memory)
         case LSR_ABS: logicalShiftRight(cycles, addressingAbsolute(cycles, memory), memory); break; 
         case LSR_ABX: logicalShiftRight(cycles, addressingAbsoluteX(cycles, memory), memory); break;
 
+        case PHA: break;
+        case PHP: break;
+        case PLA: break;
+        case PLP: break;
+
         default:
             printf("unhandled instruction : '%02x'\n", inst);
             break;

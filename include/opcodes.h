@@ -36,7 +36,10 @@ namespace nvm
         LSR_ABS = 0x4E, // Logical Shift Right, Addressing Mode: Absolute
         LSR_ABX = 0x5E, // Logical Shift Right, Addressing Mode: Absolute, X
 
-
+        PHA = 0x48, // Push Accumulator
+        PHP = 0x08, // Push Processor Status
+        PLA = 0x68, // Pull Accumulator
+        PLP = 0x08, // Pull Processor Status
         
     };
 } // namespace nvm
