@@ -44,7 +44,7 @@ void CPU::loadRegister(Byte CPU::* R, Byte value)
 
 Byte CPU::nextByte(U16& cycles, Memory& memory)
 {
-    Byte data = readByteFromMemory(cycles, PC, memory);
+    Byte data = readByte(cycles, PC, memory);
     PC.all += 1;
     return data;
 }
@@ -56,7 +56,7 @@ Word CPU::nextWord(U16& cycles, Memory& memory)
     return data;
 }
 
-Byte CPU::readByteFromMemory(U16& cycles, Word address, Memory& memory)
+Byte CPU::readByte(U16& cycles, Word address, Memory& memory)
 {
     Byte data;
     data.all = memory.byte(address.high, address.low);

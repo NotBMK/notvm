@@ -64,7 +64,7 @@ namespace nvm
 
         Word nextWord(U16& cycles, Memory& memory);
 
-        Byte readByteFromMemory(U16& cycles, Word address, Memory& memory);
+        Byte readByte(U16& cycles, Word address, Memory& memory);
 
         Word readWordFromMemory(U16& cycles, Word address, Memory& memory);
 

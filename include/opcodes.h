@@ -22,8 +22,11 @@ namespace nvm
         LDX_ABS = 0xAE,
         LDX_ABY = 0xBE,
 
-        LDB,
-        LDC,
+        LDY_IMM = 0xA0,
+        LDY_ZPG = 0xA4,
+        LDY_ZPX = 0xB4,
+        LDY_ABS = 0xAC,
+        LDY_ABX = 0xBC,
 
         JSR,
     };
