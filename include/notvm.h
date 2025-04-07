@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <vmdef.h>
+#include <opcodes.h>
 
 namespace nvm
 {
@@ -12,17 +13,17 @@ namespace nvm
 
         void reset();
 
-        BYTE byte(BYTE page, BYTE addr) const;
+        U08 byte(U08 page, U08 addr) const;
         
-        BYTE& byte(BYTE page, BYTE addr);
+        U08& byte(U08 page, U08 addr);
         
-        WORD word(BYTE page, BYTE addr) const;
+        U16 word(U08 page, U08 addr) const;
         
-        WORD& word(BYTE page, BYTE addr);
+        U16& word(U08 page, U08 addr);
     
     protected:
 
-        BYTE data[MAXN_PAGE][PAGE_SIZE];
+        U08 data[MAXN_PAGE][PAGE_SIZE];
     };
 
     class CPU
@@ -33,48 +34,66 @@ namespace nvm
 
         void resetWith(Memory& memory);
 
-        U32 execute(WORD cyclesRequest, Memory& memory);
+        U16 execute(U16 cyclesRequest, Memory& memory);
 
         void view() const noexcept;
 
     protected:
 
-        void tick(WORD& cycles, BYTE ticks);
+        void loadRegister(U08 CPU::* R, Byte value);
 
-        void statusLoad(BYTE CPU::* R);
+        void tick(U16& cycles, U08 ticks);
 
-        BYTE nextByte(WORD& cycles, Memory& memory);
+        Word addressingZeroPage(U16& cycles, Memory& memory);
 
-        BYTE readByteFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory);
+        Word addressingZeroPageX(U16& cycles, Memory& memory);
 
-        WORD readWordFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory);
+        Word addressingZeroPageY(U16& cycles, Memory& memory);
+
+        Word addressingAbsolute(U16& cycles, Memory& memory);
+
+        Word addressingAbsoluteX(U16& cycles, Memory& memory);
+
+        Word addressingAbsoluteY(U16& cycles, Memory& memory);
+
+        Word addressingIndirectX(U16& cycles, Memory& memory);
+
+        Word addressingIndirectY(U16& cycles, Memory& memory);
+
+        Byte nextByte(U16& cycles, Memory& memory);
+
+        Word nextWord(U16& cycles, Memory& memory);
+
+        Byte readByteFromMemory(U16& cycles, U08 page, U08 address, Memory& memory);
+
+        Word readWordFromMemory(U16& cycles, U08 page, U08 address, Memory& memory);
 
     protected:
 
         union
         {
-            WORD PC; // program counter
+            U16 PC; // program counter
             struct
             {
-                BYTE PC_L; // lowbit of program counter
-                BYTE PC_H; // highbit of program counter
+                U08 PC_L; // lowbit of program counter
+                U08 PC_H; // highbit of program counter
             };
         };
-        BYTE SP;
-        BYTE A, X, Y;
+        U08 SP;
+        U08 A, X, Y;
         union
         {
-            BYTE Status; // status register
+            U08 Status; // status register
             struct
             {
-                BYTE C : 1; // carry
-                BYTE Z : 1; // zero
-                BYTE I : 1; // interrupt disable
-                BYTE D : 1; // decimal mode
-                BYTE B : 1; // break command
-                BYTE V : 1; // overflow
-                BYTE N : 1; // negative
-                BYTE _ : 1; // unused
+                U08 C : 1; // carry
+                U08 Z : 1; // zero
+                U08 I : 1; // interrupt disable
+                U08 D : 1; // decimal mode
+                U08 B : 1; // break command
+                U08 V : 1; // overflow
+                U08 N : 1; // negative
+                U08 _ : 1; // unused
             };
         };
     };

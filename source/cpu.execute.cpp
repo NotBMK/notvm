@@ -2,61 +2,91 @@
 
 using namespace nvm;
 
-U32 CPU::execute(WORD cyclesRequest, Memory& memory)
+U16 CPU::execute(U16 cyclesRequest, Memory& memory)
 {
-    WORD cycles = 0;
+    U16 cycles = 0;
     while (cycles < cyclesRequest)
     {
-        BYTE inst = nextByte(cycles, memory);
-        switch (inst)
+        Byte inst = nextByte(cycles, memory);
+        switch (inst.all)
         {
         case LDA_IMM:
         {
-            BYTE data = nextByte(cycles, memory);
-            A = data;
-            statusLoad(&CPU::A);
+            loadRegister(&CPU::A, nextByte(cycles, memory));
+        } break;
+
+        case LDX_IMM:
+        {
+            loadRegister(&CPU::X, nextByte(cycles, memory));
         } break;
 
         case LDA_ZPG:
         {
-            BYTE addr = nextByte(cycles, memory);
-            A = memory.byte(0, addr); tick(cycles, 1);
-            statusLoad(&CPU::A);
+            Word addr = addressingZeroPage(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
+        } break;
+
+        case LDX_ZPG:
+        {
+            Word addr = addressingZeroPage(cycles, memory);
+            loadRegister(&CPU::X, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_ZPX:
         {
-            BYTE addr = nextByte(cycles, memory);
-            addr += X;
-            A = readByteFromMemory(cycles, 0, addr, memory);
+            Word addr = addressingZeroPageX(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_ABS:
         {
-
+            Word addr = addressingAbsolute(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_ABX:
         {
-
+            Word addr = addressingAbsoluteX(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_ABY:
         {
-
+            Word addr = addressingAbsoluteY(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_INX:
         {
-
+            Word addr = addressingIndirectX(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
         } break;
 
         case LDA_INY:
         {
+            Word addr = addressingIndirectY(cycles, memory);
+            loadRegister(&CPU::A, readByteFromMemory(cycles, addr.high, addr.low, memory));
+        } break;
+
+
+
+        case LDX_ZPY:
+        {
+            Word addr = addressingZeroPageY(cycles, memory);
+            loadRegister(&CPU::X, readByteFromMemory(cycles, addr.high, addr.low, memory));
+        } break;
+
+        case LDX_ABS:
+        {
+            Word addr = addressingAbsolute(cycles, memory);
+            loadRegister(&CPU::X, readByteFromMemory(cycles, addr.high, addr.low, memory));
+        } break;
+
+        case LDX_ABY:
+        {
 
         } break;
 
-        
         default:
             printf("unhandled instruction : '%02x'\n", inst);
             break;

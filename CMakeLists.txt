@@ -8,4 +8,6 @@ set(SOURCE_DIR "./source")
 
 file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.cpp")
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+add_subdirectory(testVM)

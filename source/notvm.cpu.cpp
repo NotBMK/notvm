@@ -30,34 +30,46 @@ void CPU::view() const noexcept
         );
 }
 
-void CPU::tick(WORD& cycles, BYTE ticks)
+void CPU::tick(U16& cycles, U08 ticks)
 {
     cycles += ticks;
 }
 
-void CPU::statusLoad(BYTE CPU::* R)
+void CPU::loadRegister(U08 CPU::* R, Byte value)
 {
-    Z = (this->*R == 0);
-    N = (this->*R & 0x80) > 0;
+    this->*R = value.all;
+    Z = (value.all == 0);
+    N = value.b07;
 }
 
-BYTE CPU::nextByte(WORD& cycles, Memory& memory)
+Byte CPU::nextByte(U16& cycles, Memory& memory)
 {
-    BYTE inst = readByteFromMemory(cycles, PC_H, PC_L, memory);
+    Byte data = readByteFromMemory(cycles, PC_H, PC_L, memory);
     PC += 1;
-    return inst;
-}
-
-BYTE CPU::readByteFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory)
-{
-    BYTE data = memory.byte(page, address);
-    tick(cycles, 1);
     return data;
 }
 
-WORD CPU::readWordFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory)
+Word CPU::nextWord(U16& cycles, Memory& memory)
 {
-    WORD data = memory.word(page, address);
+    Word data = readWordFromMemory(cycles, PC_H, PC_L, memory);
+    PC += 2;
+    return data;
+}
+
+Byte CPU::readByteFromMemory(U16& cycles, U08 page, U08 address, Memory& memory)
+{
+    Byte data;
+    data.all = memory.byte(page, address);
+    tick(cycles, 1);
+    printf("readByteFromMemory: %02X %02X %02X\n", page, address, data.all);
+    return data;
+}
+
+Word CPU::readWordFromMemory(U16& cycles, U08 page, U08 address, Memory& memory)
+{
+    Word data;
+    data.all = memory.word(page, address);
     tick(cycles, 2);
+    printf("readWordFromMemory: %02X %02X %04X\n", page, address, data.all);
     return data;
 }
