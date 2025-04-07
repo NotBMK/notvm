@@ -7,6 +7,8 @@ namespace nvm
 {
     enum Instruction
     {
+        NOP = 0xEA, // No Operation
+
         LDA_IMM = 0xA9, // Load Register A, Addressing Mode: Immediate
         LDA_ZPG = 0xA5, // Load Register A, Addressing Mode: Zero Page
         LDA_ZPX = 0xB5, // Load Register A, Addressing Mode: Zero Page, X

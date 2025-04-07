@@ -42,37 +42,45 @@ namespace nvm
 
         void view() const noexcept;
 
-    protected:
+    protected: // do instruction
 
         void loadRegister(Byte CPU::* R, Byte value);
 
-        void logicalShiftRight(U08& dst);
+        void logicalShiftRight(U16& cycles, Byte& target);
+        
+        void logicalShiftRight(U16& cycles, Word address, Memory& memory);
 
-        void tick(U16& cycles, U08 ticks);
+        void noOperation(U16& cycles) const;
 
+    protected: // addressing mode
+    
         Word addressingZeroPage(U16& cycles, Memory& memory);
-
+        
         Word addressingZeroPageX(U16& cycles, Memory& memory);
-
+        
         Word addressingZeroPageY(U16& cycles, Memory& memory);
-
+        
         Word addressingAbsolute(U16& cycles, Memory& memory);
-
+        
         Word addressingAbsoluteX(U16& cycles, Memory& memory);
-
+        
         Word addressingAbsoluteY(U16& cycles, Memory& memory);
-
+        
         Word addressingIndirectX(U16& cycles, Memory& memory);
-
+        
         Word addressingIndirectY(U16& cycles, Memory& memory);
-
+    
+    protected: // helper funciton
+    
+        void tick(U16& cycles, U08 ticks) const noexcept;
+        
         Byte nextByte(U16& cycles, Memory& memory);
 
         Word nextWord(U16& cycles, Memory& memory);
 
-        Byte readByte(U16& cycles, Word address, Memory& memory);
+        Byte readByte(U16& cycles, Word address, Memory& memory) const noexcept;
 
-        Word readWordFromMemory(U16& cycles, Word address, Memory& memory);
+        Word readWord(U16& cycles, Word address, Memory& memory) const noexcept;
 
     protected:
 
@@ -91,7 +99,7 @@ namespace nvm
                 U08 B : 1; // break command
                 U08 V : 1; // overflow
                 U08 N : 1; // negative
-                U08 _ : 1; // unused
+                // U08 _ : 1; // unused
             };
         };
     };

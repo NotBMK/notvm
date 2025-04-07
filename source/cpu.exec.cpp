@@ -10,6 +10,8 @@ U16 CPU::execute(U16 cyclesRequest, Memory& memory)
         Byte inst = nextByte(cycles, memory);
         switch (inst.all)
         {
+        case NOP: noOperation(cycles); break;
+
         case LDA_IMM: loadRegister(&CPU::A, nextByte(cycles, memory)); break;
         case LDA_ZPG: loadRegister(&CPU::A, readByte(cycles, addressingZeroPage(cycles, memory), memory)); break;
         case LDA_ZPX: loadRegister(&CPU::A, readByte(cycles, addressingZeroPageX(cycles, memory), memory)); break;
@@ -30,6 +32,12 @@ U16 CPU::execute(U16 cyclesRequest, Memory& memory)
         case LDY_ZPX: loadRegister(&CPU::Y, readByte(cycles, addressingZeroPageX(cycles, memory), memory)); break;
         case LDY_ABS: loadRegister(&CPU::Y, readByte(cycles, addressingAbsolute(cycles, memory), memory)); break;
         case LDY_ABX: loadRegister(&CPU::Y, readByte(cycles, addressingAbsoluteX(cycles, memory), memory)); break;
+
+        case LSR_ACC: logicalShiftRight(cycles, A); break;
+        case LSR_ZPG: logicalShiftRight(cycles, addressingZeroPage(cycles, memory), memory); break;
+        case LSR_ZPX: logicalShiftRight(cycles, addressingZeroPageX(cycles, memory), memory); break; 
+        case LSR_ABS: logicalShiftRight(cycles, addressingAbsolute(cycles, memory), memory); break; 
+        case LSR_ABX: logicalShiftRight(cycles, addressingAbsoluteX(cycles, memory), memory); break;
 
         default:
             printf("unhandled instruction : '%02x'\n", inst);

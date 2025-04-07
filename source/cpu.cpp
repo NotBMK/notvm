@@ -21,25 +21,17 @@ void CPU::view() const noexcept
     printf(
         "A: %02X, X: %02X, Y: %02X\n"
         "PC: %04X, SP: %04X\n"
-        "Status:\n"
-        "\t%1d %1d %1d %1d %1d %1d %1d\n"
-        "\tN V B D I Z C\n\n",
-        A, X, Y,
-        PC, SP,
+        "Status: N V B D I Z C\n"
+        "        %1d %1d %1d %1d %1d %1d %1d\n",
+        A.all, X.all, Y.all,
+        PC.all, SP.all,
         N, V, B, D, I, Z, C
         );
 }
 
-void CPU::tick(U16& cycles, U08 ticks)
+void CPU::tick(U16& cycles, U08 ticks) const noexcept
 {
     cycles += ticks;
-}
-
-void CPU::loadRegister(Byte CPU::* R, Byte value)
-{
-    this->*R = value;
-    Z = ((this->*R).all == 0);
-    N = ((this->*R).b07);
 }
 
 Byte CPU::nextByte(U16& cycles, Memory& memory)
@@ -51,12 +43,12 @@ Byte CPU::nextByte(U16& cycles, Memory& memory)
 
 Word CPU::nextWord(U16& cycles, Memory& memory)
 {
-    Word data = readWordFromMemory(cycles, PC, memory);
+    Word data = readWord(cycles, PC, memory);
     PC.all += 2;
     return data;
 }
 
-Byte CPU::readByte(U16& cycles, Word address, Memory& memory)
+Byte CPU::readByte(U16& cycles, Word address, Memory& memory) const noexcept
 {
     Byte data = memory.byte(address);
     tick(cycles, 1);
@@ -64,7 +56,7 @@ Byte CPU::readByte(U16& cycles, Word address, Memory& memory)
     return data;
 }
 
-Word CPU::readWordFromMemory(U16& cycles, Word address, Memory& memory)
+Word CPU::readWord(U16& cycles, Word address, Memory& memory) const noexcept
 {
     Word data = memory.word(address);
     tick(cycles, 2);
