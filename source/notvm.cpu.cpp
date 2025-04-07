@@ -58,8 +58,7 @@ Word CPU::nextWord(U16& cycles, Memory& memory)
 
 Byte CPU::readByte(U16& cycles, Word address, Memory& memory)
 {
-    Byte data;
-    data.all = memory.byte(address.high, address.low);
+    Byte data = memory.byte(address);
     tick(cycles, 1);
     printf("readByteFromMemory: %02X %02X %02X\n", address.high, address.low, data.all);
     return data;
@@ -67,8 +66,7 @@ Byte CPU::readByte(U16& cycles, Word address, Memory& memory)
 
 Word CPU::readWordFromMemory(U16& cycles, Word address, Memory& memory)
 {
-    Word data;
-    data.all = memory.word(address.high, address.low);
+    Word data = memory.word(address);
     tick(cycles, 2);
     printf("readWordFromMemory: %02X %02X %04X\n", address.high, address.low, data.all);
     return data;

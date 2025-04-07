@@ -8,27 +8,39 @@ void Memory::reset()
     {
         for (U16 address = 0; address < PAGE_SIZE; ++address)
         {
-            data[page][address] = 0;
+            data[page][address].all = 0;
         }
     }
 }
 
-U08 Memory::byte(U08 page, U08 addr) const
+Byte Memory::byte(Word address) const
 {
-    return data[page][addr];
+    return data[address.high][address.low];
 }
 
-U08& Memory::byte(U08 page, U08 addr)
+Byte& Memory::byte(Word address)
 {
-    return data[page][addr];
+    return data[address.high][address.low];
 }
 
-U16 Memory::word(U08 page, U08 addr) const
+Word Memory::word(Word address) const
 {
-    return *((U16*)(data[page] + addr));
+    return *((Word*)(data[address.high] + address.low));
 }
 
-U16& Memory::word(U08 page, U08 addr)
+Word& Memory::word(Word address)
 {
-    return *((U16*)(data[page] + addr));
+    return *((Word*)(data[address.high] + address.low));
+}
+
+U08 Memory::operator[] (U16 address) const
+{
+    return operator[] (address);
+}
+
+U08& Memory::operator[] (U16 address)
+{
+    Word addr;
+    addr.all = address;
+    return (*(U08*)&data[addr.high][addr.low]);
 }

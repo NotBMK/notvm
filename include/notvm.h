@@ -13,17 +13,21 @@ namespace nvm
 
         void reset();
 
-        U08 byte(U08 page, U08 addr) const;
+        Byte byte(Word address) const;
         
-        U08& byte(U08 page, U08 addr);
+        Byte& byte(Word address);
         
-        U16 word(U08 page, U08 addr) const;
+        Word word(Word address) const;
         
-        U16& word(U08 page, U08 addr);
+        Word& word(Word address);
+
+        U08 operator[] (U16 address) const;
+        
+        U08& operator[] (U16 address);
     
     protected:
 
-        U08 data[MAXN_PAGE][PAGE_SIZE];
+        Byte data[MAXN_PAGE][PAGE_SIZE];
     };
 
     class CPU
@@ -41,6 +45,8 @@ namespace nvm
     protected:
 
         void loadRegister(Byte CPU::* R, Byte value);
+
+        void logicalShiftRight(U08& dst);
 
         void tick(U16& cycles, U08 ticks);
 
