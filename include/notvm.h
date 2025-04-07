@@ -1,80 +1,164 @@
-#ifndef INC__NOTVM__H
-#define INC__NOTVM__H
+#ifndef INC__VM__H
+#define INC__VM__H
 
+#include <stdio.h>
 #include <vmdef.h>
 
 namespace nvm
 {
-    struct Memory
+    class Memory
     {
-        enum
-        {
-            MAX_MEMORY = 0x10000, // 64KB of memory
-            MAX_PAGES = 0x100, // 256 pages
-            PAGE_SIZE = 0x100 // 256 bytes per page
-        };
-
-        BYTE data[MAX_MEMORY]; // 64KB of memory
+    public:
 
         void reset();
 
-        // read 1 byte
-        BYTE operator[] (WORD address) const;
+        BYTE byte(BYTE page, BYTE addr) const;
+        
+        BYTE& byte(BYTE page, BYTE addr);
+        
+        WORD word(BYTE page, BYTE addr) const;
+        
+        WORD& word(BYTE page, BYTE addr);
+    
+    protected:
 
-        // write 1 byte
-        BYTE& operator[] (WORD address);
-
-        // write 2 bytes
-        void writeWord(WORD value, WORD address, WORD& cycles);
+        BYTE data[MAXN_PAGE][PAGE_SIZE];
     };
 
-    // 6502 CPU registers and flags
-    struct CPU
+    class CPU
     {
+    public:
+
         void reset();
 
-        void reset_with(Memory &mem);
+        void resetWith(Memory& memory);
 
-        BYTE readByte(WORD& cycles, WORD address, Memory& memory) const;
-        WORD readWord(WORD& cycles, WORD address, Memory& memory) const;
+        U32 execute(WORD cyclesRequest, Memory& memory)
+        {
+            WORD cycles = 0;
+            while (cycles < cyclesRequest)
+            {
+                BYTE inst = nextByte(cycles, memory);
+                switch (inst)
+                {
+                case LDA_IMM:
+                {
+                    BYTE data = nextByte(cycles, memory);
+                    A = data;
+                    statusLoad<&CPU::A>();
+                } break;
 
-        BYTE fetchByte(WORD& cycles, Memory& memory);
-        WORD fetchWord(WORD& cycles, Memory& memory);
+                case LDA_ZPG:
+                {
+                    BYTE addr = nextByte(cycles, memory);
+                    A = memory.byte(0, addr); tick(cycles, 1);
+                    statusLoad<&CPU::A>();
+                } break;
 
-        WORD execute(WORD cycles, Memory& memory);
+                case LDA_ZPX:
+                {
+                    BYTE addr = nextByte(cycles, memory);
+                    addr += X;
+                    A = readByteFromMemory(cycles, 0, addr, memory);
+                } break;
 
-        void showRegisters() const noexcept;
+                case LDA_ABS:
+                {
 
-    private:
+                } break;
 
-        void StatusLoadRegister(BYTE reg);
+                case LDA_ABX:
+                {
+
+                } break;
+
+                case LDA_ABY:
+                {
+
+                } break;
+
+                case LDA_INX:
+                {
+
+                } break;
+
+                case LDA_INY:
+                {
+
+                } break;
+
+                
+                default:
+                    printf("unhandled instruction : '%02x'\n", inst);
+                    break;
+                }
+            }
+            return cycles;
+        }
+
+        void view() const noexcept
+        {
+            printf(
+                "A: %02X, X: %02X, Y: %02X\n"
+                "PC: %04X, SP: %04X\n"
+                "Status:\n"
+                "\t%1d %1d %1d %1d %1d %1d %1d\n"
+                "\tN V B D I Z C\n\n",
+                A, X, Y,
+                PC, SP,
+                N, V, B, D, I, Z, C
+                );
+        }
 
     protected:
-    public:
-        
-        WORD PC; // Program Counter
-        WORD SP; // Stack Pointer
 
-        BYTE A, X, Y; // registers
+        constexpr static inline
+        void tick(WORD& cycles, BYTE ticks)
+        { cycles += ticks; }
+
+        template <BYTE CPU::* R>
+        constexpr inline
+        void statusLoad()
+        {
+            Z = (this->*R == 0);
+            N = (this->*R & 0x80) > 0;
+        }
+
+        BYTE nextByte(WORD& cycles, Memory& memory);
+
+        BYTE readByteFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory);
+
+        WORD readWordFromMemory(WORD& cycles, BYTE page, BYTE address, Memory& memory);
+
+    protected:
 
         union
         {
-            BYTE Status; // Status register
+            WORD PC; // program counter
             struct
             {
-                BYTE C : 1; // Carry
-                BYTE Z : 1; // Zero
-                BYTE I : 1; // Interrupt Disable
-                BYTE D : 1; // Decimal Mode
-                BYTE B : 1; // Break Command
-                BYTE V : 1; // Overflow
-                BYTE N : 1; // Negative
+                BYTE PC_L; // lowbit of program counter
+                BYTE PC_H; // highbit of program counter
+            };
+        };
+        BYTE SP;
+        BYTE A, X, Y;
+        union
+        {
+            BYTE Status; // status register
+            struct
+            {
+                BYTE C : 1; // carry
+                BYTE Z : 1; // zero
+                BYTE I : 1; // interrupt disable
+                BYTE D : 1; // decimal mode
+                BYTE B : 1; // break command
+                BYTE V : 1; // overflow
+                BYTE N : 1; // negative
                 BYTE _ : 1; // unused
             };
         };
-        
     };
-} // namespace nvm
-
+}; // ! namespace nvm
 
 #endif

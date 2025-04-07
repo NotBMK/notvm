@@ -5,37 +5,32 @@ namespace nvm
 {
     using BYTE = unsigned char;
     using WORD = unsigned short;
+    using U32 = unsigned int;
+    using S32 = signed int;
 
-    enum Instruction
+    enum Constant
     {
-        // LDA - Load Accumulator
-        INST_LDA_IM = 0xA9, // Load Accumulator Immediate
-        INST_LDA_ZP = 0xA5, // Load Accumulator Zero Page
-        INST_LDA_ZPX = 0xB5, // Load Accumulator Zero Page,X
-        INST_LDA_ABS = 0xAD,
-        INST_LDA_ABSX = 0xBD,
-        INST_LDA_ABSY = 0xB9,
-        INST_LDA_INDX = 0xA1,
-        INST_LDA_INDY = 0xB1,
-
-        // LDX - Load X Register
-        INST_LDX_IM = 0xA2, // Load X Register Immediate
-        INST_LDX_ZP = 0xA6, // Load X Register Zero Page
-        INST_LDX_ZPY = 0xB6, // Load X Register Zero Page,Y
-        INST_LDX_ABS = 0xAE,
-        INST_LDX_ABSY = 0xBE,
-
-        // LDY - Load Y Register
-        INST_LDY_IM = 0xA0, // Load Y Register Immediate
-        INST_LDY_ZP = 0xA4, // Load Y Register Zero Page
-        INST_LDY_ZPX = 0xB4, // Load Y Register Zero Page,Y
-        INST_LDY_ABS = 0xAC,
-        INST_LDY_ABSX = 0xBC,
-
-        INST_JSR = 0x20, // Jump to Subroutine
+        PAGE_SIZE = 256, // size of per page
+        MAXN_PAGE = 256, // amount of pages
     };
 
+       
+    enum Instruction
+    {
+        LDA_IMM = 0xA9,
+        LDA_ZPG = 0xA5,
+        LDA_ZPX = 0xB5,
+        LDA_ABS = 0xAD,
+        LDA_ABX = 0xBD,
+        LDA_ABY = 0xB9,
+        LDA_INX = 0xA1,
+        LDA_INY = 0xB1,
 
+        LDB,
+        LDC,
+
+        JSR,
+    };
 } // namespace nvm
 
 
