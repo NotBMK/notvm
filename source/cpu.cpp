@@ -29,7 +29,7 @@ void CPU::view() const noexcept
         );
 }
 
-void CPU::tick(U16& cycles, U08 ticks) const noexcept
+void CPU::tick(U16& cycles, U08 ticks) noexcept
 {
     cycles += ticks;
 }

@@ -2,6 +2,14 @@
 
 using namespace nvm;
 
+void CPU::addWithCarry(Byte data)
+{
+    Word result = (U16)A + data + C;
+    C = result.b08; 
+    V = (A.b07 == data.b07 && A.b07 != result.b07);
+    return loadRegister(&CPU::A, result.low);
+}
+
 void CPU::loadRegister(Byte CPU::* R, Byte value)
 {
     this->*R = value;

@@ -10,6 +10,15 @@ U16 CPU::execute(U16 cyclesRequest, Memory& memory)
         Byte inst = nextByte(cycles, memory);
         switch (inst.all)
         {
+        case ADC_IMM: addWithCarry(nextByte(cycles, memory)); break;
+        case ADC_ZPG: addWithCarry(readByte(cycles, addressingZeroPage(cycles, memory), memory)); break;
+        case ADC_ZPX: addWithCarry(readByte(cycles, addressingZeroPageX(cycles, memory), memory)); break;
+        case ADC_ABS: addWithCarry(readByte(cycles, addressingAbsolute(cycles, memory), memory)); break;
+        case ADC_ABX: addWithCarry(readByte(cycles, addressingAbsoluteX(cycles, memory), memory)); break;
+        case ADC_ABY: addWithCarry(readByte(cycles, addressingAbsoluteY(cycles, memory), memory)); break;
+        case ADC_INX: addWithCarry(readByte(cycles, addressingIndirectX(cycles, memory), memory)); break;
+        case ADC_INY: addWithCarry(readByte(cycles, addressingIndirectY(cycles, memory), memory)); break;
+
         case NOP: noOperation(cycles); break;
 
         case LDA_IMM: loadRegister(&CPU::A, nextByte(cycles, memory)); break;

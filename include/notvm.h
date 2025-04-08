@@ -44,6 +44,8 @@ namespace nvm
 
     protected: // do instruction
 
+        void addWithCarry(Byte data);
+
         void loadRegister(Byte CPU::* R, Byte value);
 
         void logicalShiftRight(U16& cycles, Byte& target);
@@ -75,8 +77,9 @@ namespace nvm
         Word addressingIndirectY(U16& cycles, Memory& memory);
     
     protected: // helper funciton
-    
-        void tick(U16& cycles, U08 ticks) const noexcept;
+        
+        static
+        void tick(U16& cycles, U08 ticks) noexcept;
         
         Byte nextByte(U16& cycles, Memory& memory);
 

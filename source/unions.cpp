@@ -29,3 +29,10 @@ Word::operator U16() const noexcept
 {
     return all;
 }
+
+OpCode::OpCode()
+{ }
+
+OpCode::OpCode(U08 op)
+: all(op)
+{ }

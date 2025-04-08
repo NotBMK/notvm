@@ -12,6 +12,8 @@ namespace nvm
     {
         PAGE_SIZE = 256, // size of per page
         MAXN_PAGE = 256, // amount of pages
+        INST_MASK = 0xE3,
+        MODE_MASK = 0x1C,
     };
 
     union Byte
@@ -62,6 +64,42 @@ namespace nvm
             U08 b12:1; U08 b13:1; U08 b14:1; U08 b15:1;
         };
     };
+
+    // unused
+    enum AddressingMode : U08
+    {
+        IMM = 0b010,
+        ZPG = 0b001,
+        ZPX = 0b101,
+        ABS = 0b011,
+        ABX = 0b111,
+        ABY = 0b110,
+        INX = 0b000,
+        INY = 0b100,
+    };
+
+    // unused
+    union OpCode
+    {
+    public:
+
+        OpCode();
+        OpCode(U08 op);
+
+    public:
+
+        U08 all;
+        struct
+        {
+            U08 low : 2;
+            AddressingMode mode : 3;
+            U08 high: 3;
+        };
+    };
+
+    static_assert(sizeof(Byte) == 1, "sizeof(Byte) != 1");
+    static_assert(sizeof(Word) == 2, "sizeof(Word) != 2");
+    static_assert(sizeof(OpCode) == 1, "sizeof(OpCode) != 1");
 } // namespace nvm
 
 

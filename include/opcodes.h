@@ -9,6 +9,24 @@ namespace nvm
     {
         NOP = 0xEA, // No Operation
 
+        ADC_IMM = 0x69, // Add with Carry, Addressing Mode: Immediate
+        ADC_ZPG = 0x65, // Add with Carry, Addressing Mode: Zero Page
+        ADC_ZPX = 0x75, // Add with Carry, Addressing Mode: Zero Page, X
+        ADC_ABS = 0x6D, // Add with Carry, Addressing Mode: Absolute
+        ADC_ABX = 0x7D, // Add with Carry, Addressing Mode: Absolute, X
+        ADC_ABY = 0x79, // Add with Carry, Addressing Mode: Absolute, Y
+        ADC_INX = 0x61, // Add with Carry, Addressing Mode: (Indirect, X)
+        ADC_INY = 0x71, // Add with Carry, Addressing Mode: (Indirect), Y
+
+        AND_IMM = 0x29, // Logical AND, Addressing Mode: Immediate
+        AND_ZPG = 0x25, // Logical AND, Addressing Mode: Zero Page
+        AND_ZPX = 0x35, // Logical AND, Addressing Mode: Zero Page, X
+        AND_ABS = 0x2D, // Logical AND, Addressing Mode: Absolute
+        AND_ABX = 0x3D, // Logical AND, Addressing Mode: Absolute, X
+        AND_ABY = 0x39, // Logical AND, Addressing Mode: Absolute, Y
+        AND_INX = 0x21, // Logical AND, Addressing Mode: (Indirect, X)
+        AND_INY = 0x31, // Logical AND, Addressing Mode: (Indirect), Y
+
         LDA_IMM = 0xA9, // Load Register A, Addressing Mode: Immediate
         LDA_ZPG = 0xA5, // Load Register A, Addressing Mode: Zero Page
         LDA_ZPX = 0xB5, // Load Register A, Addressing Mode: Zero Page, X

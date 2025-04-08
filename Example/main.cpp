@@ -7,6 +7,8 @@ int main(int argc, char const *argv[])
     nvm::Memory memory;
     nvm::CPU cpu;
 
+    sizeof(nvm::OpCode);
+
     cpu.resetWith(memory);
 
     memory[0x0000] = nvm::LDA_ABS;
